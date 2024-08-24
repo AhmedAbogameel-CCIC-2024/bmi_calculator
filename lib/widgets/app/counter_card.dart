@@ -10,10 +10,14 @@ class CounterCard extends StatelessWidget {
     Key? key,
     required this.count,
     required this.title,
+    required this.onPlus,
+    required this.onMinus,
   }) : super(key: key);
 
   final String count;
   final String title;
+  final Function() onPlus;
+  final Function() onMinus;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class CounterCard extends StatelessWidget {
                 children: [
                   _CountButton(
                     icon: FontAwesomeIcons.minus,
-                    onTap: () {},
+                    onTap: onMinus,
                   ),
                   Expanded(
                     child: AppText(
@@ -42,7 +46,7 @@ class CounterCard extends StatelessWidget {
                   ),
                   _CountButton(
                     icon: FontAwesomeIcons.plus,
-                    onTap: () {},
+                    onTap: onPlus,
                   ),
                 ],
               ),

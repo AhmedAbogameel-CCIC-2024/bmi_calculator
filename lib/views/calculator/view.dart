@@ -10,8 +10,23 @@ import '../../widgets/app/counter_card.dart';
 import '../../widgets/app/gender_choice_card.dart';
 import '../result /view.dart';
 
-class CalculatorView extends StatelessWidget {
+class CalculatorView extends StatefulWidget {
   const CalculatorView({Key? key}) : super(key: key);
+
+  @override
+  State<CalculatorView> createState() => _CalculatorViewState();
+}
+
+class _CalculatorViewState extends State<CalculatorView> {
+
+  int height = 175;
+  int weight = 80;
+  bool isMale = true;
+
+  double calculate() {
+    final heightInMeter = height / 100;
+    return weight / (heightInMeter * heightInMeter);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +45,8 @@ class CalculatorView extends StatelessWidget {
                     child: GenderChoiceCard(
                       title: 'Male',
                       icon: FontAwesomeIcons.person,
-                      isSelected: true,
+                      isSelected: isMale,
+                      onTap: () => setState(() => isMale = true),
                     ),
                   ),
                   SizedBox(width: 16.width),
@@ -38,7 +54,8 @@ class CalculatorView extends StatelessWidget {
                     child: GenderChoiceCard(
                       title: 'Female',
                       icon: FontAwesomeIcons.personDress,
-                      isSelected: false,
+                      isSelected: !isMale,
+                      onTap: () => setState(() => isMale = false),
                     ),
                   ),
                 ],
@@ -46,20 +63,24 @@ class CalculatorView extends StatelessWidget {
             ),
             SizedBox(height: 16.height),
             CounterCard(
-              count: '190',
+              count: '$height',
               title: 'Height (in cm)',
+              onPlus: () => height < 220 ? setState(() => height++) : null,
+              onMinus: () => height > 40 ? setState(() => height--) : null,
             ),
             SizedBox(height: 16.height),
             CounterCard(
-              count: '90',
+              count: '$weight',
               title: 'Weight (in kg)',
+              onPlus: () => setState(() => weight++),
+              onMinus: () => weight > 5 ? setState(() => weight--) : null,
             ),
             SizedBox(height: 40.height),
             SafeArea(
               child: AppButton(
                 title: 'Calculate',
                 onTap: () {
-                  RouteUtils.push(context, ResultView());
+                  RouteUtils.push(context, ResultView(result: calculate()));
                 },
               ),
             ),

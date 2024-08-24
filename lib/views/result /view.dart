@@ -6,7 +6,36 @@ import 'package:bmi_calculator/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
 class ResultView extends StatelessWidget {
-  const ResultView({Key? key}) : super(key: key);
+  const ResultView({
+    Key? key,
+    required this.result,
+  }) : super(key: key);
+
+  final double result;
+
+  String getResult() {
+    if (result < 18.5) {
+      return "Underweight";
+    } else if (result >= 18.5 && result < 25) {
+      return 'Normal';
+    } else if (result >= 25 && result < 30) {
+      return 'Overweight';
+    } else {
+      return 'Obese';
+    }
+  }
+
+  Color getColor() {
+    if (result < 18.5) {
+      return AppColors.grey;
+    } else if (result >= 18.5 && result < 25) {
+      return Colors.yellow;
+    } else if (result >= 25 && result < 30) {
+      return Colors.orange;
+    } else {
+      return Colors.red;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +58,15 @@ class ResultView extends StatelessWidget {
               ),
               SizedBox(height: 12.height),
               AppText(
-                title: '34.6',
+                title: result.toStringAsFixed(1),
                 fontSize: 50.font,
                 fontWeight: FontWeight.w700,
+              ),
+              SizedBox(height: 4.height),
+              AppText(
+                title: '${getResult()}',
+                color: getColor(),
+                fontSize: 24.font,
               ),
             ],
           ),
