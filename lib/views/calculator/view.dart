@@ -1,6 +1,7 @@
 import 'package:bmi_calculator/core/extensions/num.dart';
 import 'package:bmi_calculator/core/route_utils/route_utils.dart';
 import 'package:bmi_calculator/core/utils/colors.dart';
+import 'package:bmi_calculator/views/calculator/controller.dart';
 import 'package:bmi_calculator/widgets/app_app_bar.dart';
 import 'package:bmi_calculator/widgets/app_button.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +19,12 @@ class CalculatorView extends StatefulWidget {
 }
 
 class _CalculatorViewState extends State<CalculatorView> {
+  late CalculatorController _controller;
 
-  int height = 175;
-  int weight = 80;
-  bool isMale = true;
-
-  double calculate() {
-    final heightInMeter = height / 100;
-    return weight / (heightInMeter * heightInMeter);
+  @override
+  void initState() {
+    _controller = CalculatorController(state: this);
+    super.initState();
   }
 
   @override
@@ -45,8 +44,8 @@ class _CalculatorViewState extends State<CalculatorView> {
                     child: GenderChoiceCard(
                       title: 'Male',
                       icon: FontAwesomeIcons.person,
-                      isSelected: isMale,
-                      onTap: () => setState(() => isMale = true),
+                      isSelected: _controller.isMale,
+                      onTap: () => _controller.changeGender(true),
                     ),
                   ),
                   SizedBox(width: 16.width),
@@ -54,8 +53,8 @@ class _CalculatorViewState extends State<CalculatorView> {
                     child: GenderChoiceCard(
                       title: 'Female',
                       icon: FontAwesomeIcons.personDress,
-                      isSelected: !isMale,
-                      onTap: () => setState(() => isMale = false),
+                      isSelected: !_controller.isMale,
+                      onTap: () => _controller.changeGender(false),
                     ),
                   ),
                 ],
@@ -63,24 +62,29 @@ class _CalculatorViewState extends State<CalculatorView> {
             ),
             SizedBox(height: 16.height),
             CounterCard(
-              count: '$height',
+              count: '${_controller.height}',
               title: 'Height (in cm)',
-              onPlus: () => height < 220 ? setState(() => height++) : null,
-              onMinus: () => height > 40 ? setState(() => height--) : null,
+              onPlus: _controller.increaseHeight,
+              onMinus: _controller.decreaseHeight,
             ),
             SizedBox(height: 16.height),
             CounterCard(
-              count: '$weight',
+              count: '${_controller.weight}',
               title: 'Weight (in kg)',
-              onPlus: () => setState(() => weight++),
-              onMinus: () => weight > 5 ? setState(() => weight--) : null,
+              onPlus: _controller.increaseWeight,
+              onMinus: _controller.decreaseWeight,
             ),
             SizedBox(height: 40.height),
             SafeArea(
               child: AppButton(
                 title: 'Calculate',
                 onTap: () {
-                  RouteUtils.push(context, ResultView(result: calculate()));
+                  RouteUtils.push(
+                    context,
+                    ResultView(
+                      result: _controller.calculate(),
+                    ),
+                  );
                 },
               ),
             ),

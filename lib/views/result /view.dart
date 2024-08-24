@@ -1,40 +1,31 @@
 import 'package:bmi_calculator/core/extensions/build_context.dart';
 import 'package:bmi_calculator/core/extensions/num.dart';
 import 'package:bmi_calculator/core/utils/colors.dart';
+import 'package:bmi_calculator/views/calculator/controller.dart';
 import 'package:bmi_calculator/widgets/app_app_bar.dart';
 import 'package:bmi_calculator/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
-class ResultView extends StatelessWidget {
-  const ResultView({
+class ResultView extends StatefulWidget {
+  ResultView({
     Key? key,
     required this.result,
   }) : super(key: key);
 
   final double result;
 
-  String getResult() {
-    if (result < 18.5) {
-      return "Underweight";
-    } else if (result >= 18.5 && result < 25) {
-      return 'Normal';
-    } else if (result >= 25 && result < 30) {
-      return 'Overweight';
-    } else {
-      return 'Obese';
-    }
-  }
+  @override
+  State<ResultView> createState() => _ResultViewState();
+}
 
-  Color getColor() {
-    if (result < 18.5) {
-      return AppColors.grey;
-    } else if (result >= 18.5 && result < 25) {
-      return Colors.yellow;
-    } else if (result >= 25 && result < 30) {
-      return Colors.orange;
-    } else {
-      return Colors.red;
-    }
+class _ResultViewState extends State<ResultView> {
+
+  late CalculatorController _controller;
+
+  @override
+  void initState() {
+    _controller = CalculatorController(state: this);
+    super.initState();
   }
 
   @override
@@ -58,14 +49,14 @@ class ResultView extends StatelessWidget {
               ),
               SizedBox(height: 12.height),
               AppText(
-                title: result.toStringAsFixed(1),
+                title: widget.result.toStringAsFixed(1),
                 fontSize: 50.font,
                 fontWeight: FontWeight.w700,
               ),
               SizedBox(height: 4.height),
               AppText(
-                title: '${getResult()}',
-                color: getColor(),
+                title: '${_controller.getResult(widget.result)}',
+                color: _controller.getColor(widget.result),
                 fontSize: 24.font,
               ),
             ],
